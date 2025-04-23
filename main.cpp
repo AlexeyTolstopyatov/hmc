@@ -1,17 +1,26 @@
 #include <iostream>
 #include "core/Hamming.hpp"
 
+void m_PrintHelpPage();
+
 int main(int argc, char ** argv) {
-    // determine syntax
-    // make safe environment for test cases
+    // ./app --decode/encode <vector> --3c <checkcum chars count>
+    if (argc < 5)
+        m_PrintHelpPage();
+    int count = 0;
+    // find CCC
+    int i = 1;
+    while (i < argc) {
+        if (argv[i] == "--3c") {
+            count = atoi(argv[i+1]);
+            break;
+        }
+        ++i;
+    }
+
     return 0;
 }
-
-/**
- * m_PrintHelpPage
- * Prints information about syntax rules
- * how to use application
- */
+/// Prints help page in terminal
 void m_PrintHelpPage() {
     std::cout
         << "Hamming code implementation"
