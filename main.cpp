@@ -1,5 +1,6 @@
 #include <iostream>
 #include <bitset>
+#include <cstring>
 #include "core/Hamming.hpp"
 
 /// Hamming Boolean vector parameters
@@ -8,69 +9,99 @@
 /// better use arguments tuple or structure.
 struct HammingVectorParameters {
     int iErrorPosition;
-    bool bClearedPhrase;
-    char* p_cVectorString;
+    bool bHasError;
+    char* pVector;
 };
 
 void m_PrintHelpPage();
-int m_DecodeRequiredVector(struct HammingVectorParameters* p_args);
+int m_DecodeRequiredVector(struct HammingVectorParameters* pArgs);
+int m_EncodeRequiredVector(char* strVector);
 
 int main(int argc, char ** argv) {
-    // ./app --decode/encode <vector>
-    if (argc < 5)
-        m_PrintHelpPage();
-    struct HammingVectorParameters args = {};
-
+    struct HammingVectorParameters args = {0};
     int i = 1;
     while (i < argc) {
-        if (argv[i] == "--esim") {
-            clear = false;
-            count = atoi(argv[i + 1]);
+        if (!strcmp(argv[i], "--encode") || !strcmp(argv[i], "-e")) {
+            return m_EncodeRequiredVector(argv[i + 1]);
         }
-        if (argv[i] == "--decode") {
+        if (!strcmp(argv[i], "--error-position") || !strcmp(argv[i], "-err")) {
+            args.bHasError = false;
+            args.iErrorPosition = (atoi(argv[i + 1]) - 1);
+        }
+        if (!strcmp(argv[i], "--decode") || !strcmp(argv[i], "-d")) {
             return m_DecodeRequiredVector(&args);
-            break;
         }
         ++i;
     }
-
+    m_PrintHelpPage();
     return 0;
 }
 /// Calls Hamming class instance and procedures
 /// for decoding current Boolean vector from string
-/// \return Application halt status. (Control of application's behaviour)
-int m_DecodeRequiredVector(struct HammingVectorParameters* p_args) {
-    auto hammingInstance = new CHamming();
+/// \return Application's exit state.
+int m_DecodeRequiredVector(struct HammingVectorParameters* pArgs) {
+    auto pHamming = new CHamming();
 
-    std::vector<bool> booleanVector;
-    booleanVector.emplace_back(p_args->p_cVectorString);
-
-    if (!p_args->bClearedPhrase){
-        booleanVector[p_args->iErrorPosition] =!booleanVector[p_args->iErrorPosition];
+    int iVectorSize = sizeof(pArgs->pVector);
+    if (pArgs->iErrorPosition < 0 || pArgs->iErrorPosition > iVectorSize){
+        delete pHamming;
+        return 1;
     }
 
-    std::vector<bool> decoded =
-            hammingInstance->GetDecodedVector(booleanVector, p_args->bClearedPhrase);
-    hammingInstance->PrintVector(decoded);
+    std::vector<bool> vForDecoding;
+    vForDecoding.emplace_back(pArgs->pVector);
 
-    delete hammingInstance;
+    if (vForDecoding.empty()) {
+        delete pHamming;
+        return 1;
+    }
+
+    if (!pArgs->bHasError){
+        vForDecoding[pArgs->iErrorPosition] =!vForDecoding[pArgs->iErrorPosition];
+    }
+
+    std::vector<bool> vDecoded =
+            pHamming->GetDecodedVector(vForDecoding, pArgs->bHasError);
+    pHamming->PrintVector(vDecoded);
+
+    delete pHamming;
+    return 0;
+}
+
+/// Calls Hamming class instance and procedures
+/// for encoding current Boolean vector from string
+/// \return Application's exit state.
+int m_EncodeRequiredVector(char* strVector) {
+    auto pHamming = new CHamming();
+    std::vector<bool> vForEncoding;
+    vForEncoding.emplace_back(strVector);
+
+    if (vForEncoding.empty()) {
+        delete pHamming;
+        return 1;
+    }
+
+    std::vector<bool> vEncoded = pHamming->GetEncodedVector(vForEncoding);
+    pHamming->PrintVector(vEncoded);
+
+    delete pHamming;
     return 0;
 }
 
 /// Prints help page in terminal
 void m_PrintHelpPage() {
     std::cout
-        << "Hamming code implementation"
+        << "Hamming code implementation" << std::endl
         << "usage:" << std::endl
         << std::endl
         << "hmc --encode <phrase>" << std::endl
-        << "hmc --esim <position> --decode <phrase>" << std::endl;
+        << "hmc --error-position <position integer> --decode <phrase>" << std::endl;
 
     std::cout << "\t--encode\tEncodes required phrase (next by key)" << std::endl;
     std::cout << "\t--decode\tDecodes required ohrase (next by key)."
         << "If key of error simulation disabled -> phrase means like cleared. (without errors)"
         << std::endl;
-    std::cout << "\t--esim\tError simulation key (optional)." << std::endl;
+    std::cout << "\t--error-position\tError simulation key (optional)." << std::endl;
 }
 
 void m_UseHammingAlgorithms() {

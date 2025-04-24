@@ -1,0 +1,12 @@
+# ninja log v6
+62	1596	7671929021036093	CMakeFiles/hmc.dir/main.cpp.obj	f406a6fecceb24e6
+317	1607	7671929023584918	CMakeFiles/hmc.dir/core/Hamming.cpp.obj	3fc89fe6e5245796
+1607	2398	7671929036486805	hmc.exe	a67cfe7f6e9a2a2e
+8	729	7671933241697650	CMakeFiles/hmc.dir/main.cpp.obj	f406a6fecceb24e6
+730	893	7671933248914949	hmc.exe	a67cfe7f6e9a2a2e
+7	714	7671933898225933	CMakeFiles/hmc.dir/main.cpp.obj	f406a6fecceb24e6
+714	861	7671933905299695	hmc.exe	a67cfe7f6e9a2a2e
+66	2006	7671945120117170	CMakeFiles/hmc.dir/main.cpp.obj	f406a6fecceb24e6
+2007	2541	7671945139524851	hmc.exe	a67cfe7f6e9a2a2e
+34	787	7671945337526861	CMakeFiles/hmc.dir/main.cpp.obj	f406a6fecceb24e6
+788	947	7671945345062514	hmc.exe	a67cfe7f6e9a2a2e
