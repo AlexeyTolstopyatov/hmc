@@ -104,6 +104,7 @@ std::vector<bool> CHamming::GetDecodedVector(const std::vector<bool>& encoded, b
         if (parity != received[pos - 1]) syndrome += pos;
     }
 
+    // Reset data flag.
     // Errors correction logic
     errorCorrected = false;
     if (syndrome != 0 && syndrome <= total) {
