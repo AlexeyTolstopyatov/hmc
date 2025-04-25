@@ -7,27 +7,27 @@
 // Private members implementation
 
 /// Checks for having power of 2
-/// \param n number
+/// \param i number
 /// \return True if it has
-bool CHamming::m_IsPowerOf2(int n) {
-    return (n & (n - 1)) == 0;
+bool CHamming::m_IsPowerOf2(int i) {
+    return (i & (i - 1)) == 0;
 }
 /// Computes count of checksum bytes/bits
-/// \param dataBits all data bits
+/// \param iBits all data bits
 /// \return Count of checksum bytes/bits
-int CHamming::m_GetChecksumCount(int dataBits) {
+int CHamming::m_GetChecksumCount(int iBits) {
     int redBits = 0;
-    while ((redBits * redBits) < dataBits + redBits + 1)
+    while ((redBits * redBits) < iBits + redBits + 1)
         redBits++;
 
     return redBits;
 }
-/// Generates positions of checksum bytes/bits
-/// \param bits totally count of data bits
-/// \return vector of controlling positions (not bits)
-std::vector<int> CHamming::m_GetPositionsVector(int bits) {
+/// Generates positions of checksum bytes/iBits
+/// \param iBits totally count of data iBits
+/// \return vector of controlling positions (not iBits)
+std::vector<int> CHamming::m_GetPositionsVector(int iBits) {
     std::vector<int> positions;
-    for (int i = 1; i < bits; ++i) {
+    for (int i = 1; i < iBits; ++i) {
         positions.push_back(i);
     }
     return positions;
@@ -43,23 +43,23 @@ void CHamming::PrintVector(const std::vector<bool>& bits) {
     std::cout << std::endl;
 }
 /// Make vector of encoded bits/bytes
-/// from data-bit collection reference
-/// \param data vector of data bits
+/// from vData-bit collection reference
+/// \param vData vector of vData bits
 /// \return Vector of encoded logical values (boolean)
-std::vector<bool> CHamming::GetEncodedVector(const std::vector<bool>& data) {
-    int m = data.size();
+std::vector<bool> CHamming::GetEncodedVector(const std::vector<bool>& vData) {
+    int m = vData.size();
     int r = m_GetChecksumCount(m);
     int total = m + r;
 
     std::vector<bool> encoded(total + 1); // Индексация с 1
     std::vector<int> parityPos = m_GetPositionsVector(total);
 
-    // Filling data bits positions
+    // Filling vData bits positions
     // (skip pow(x,2) positions)
     int dataPos = 0;
     for (int i = 1; i <= total; ++i) {
         if (!m_IsPowerOf2(i)) {
-            encoded[i] = data[dataPos++];
+            encoded[i] = vData[dataPos++];
         }
     }
 
@@ -77,14 +77,14 @@ std::vector<bool> CHamming::GetEncodedVector(const std::vector<bool>& data) {
     std::vector<bool> result = std::vector<bool>(encoded.begin() + 1, encoded.end());
     return result;
 }
-/// Makes information bits vector from encoded
+/// Makes information bits vector from vEncoded
 /// message (boolean vector too). Arguments includes
 /// message itself and correction data.
-/// \param encoded
-/// \param errorCorrected
+/// \param vEncoded
+/// \param bErrorCorrected
 /// \return
-std::vector<bool> CHamming::GetDecodedVector(const std::vector<bool>& encoded, bool& errorCorrected) {
-    std::vector<bool> received = encoded;
+std::vector<bool> CHamming::GetDecodedVector(const std::vector<bool>& vEncoded, bool& bErrorCorrected) {
+    std::vector<bool> received = vEncoded;
     int total = received.size();
     int syndrome = 0;
 
@@ -106,10 +106,10 @@ std::vector<bool> CHamming::GetDecodedVector(const std::vector<bool>& encoded, b
 
     // Reset data flag.
     // Errors correction logic
-    errorCorrected = false;
+    bErrorCorrected = false;
     if (syndrome != 0 && syndrome <= total) {
         received[syndrome - 1] = !received[syndrome - 1];
-        errorCorrected = true;
+        bErrorCorrected = true;
     }
 
     // Extraction process

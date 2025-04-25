@@ -5,18 +5,17 @@
 #ifndef HMC_HAMMING_HPP
 #define HMC_HAMMING_HPP
 
-#include <iostream>
-#include <vector>
+#include "Framework.hpp"
 
 class CHamming {
 private:
-    bool m_IsPowerOf2(int n);
-    int m_GetChecksumCount(int dataBits);
-    std::vector<int> m_GetPositionsVector(int bits);
+    bool m_IsPowerOf2(int i);
+    int m_GetChecksumCount(int iBits);
+    std::vector<int> m_GetPositionsVector(int iBits);
 
 public:
-    std::vector<bool> GetEncodedVector(const std::vector<bool>& data);
-    std::vector<bool> GetDecodedVector(const std::vector<bool>& encoded, bool& errorCorrected);
+    std::vector<bool> GetEncodedVector(const std::vector<bool>& vData);
+    std::vector<bool> GetDecodedVector(const std::vector<bool>& vEncoded, bool& bErrorCorrected);
     void PrintVector(const std::vector<bool>& bits);
 };
 

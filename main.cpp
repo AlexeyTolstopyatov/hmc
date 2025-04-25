@@ -1,6 +1,3 @@
-#include <iostream>
-#include <bitset>
-#include <cstring>
 #include "core/Hamming.hpp"
 
 /// Hamming Boolean vector parameters
@@ -16,6 +13,7 @@ struct HammingVectorParameters {
 void m_PrintHelpPage();
 int m_DecodeRequiredVector(struct HammingVectorParameters* pArgs);
 int m_EncodeRequiredVector(char* strVector);
+void m_CStringToBooleanVector(std::vector<bool>* pVector);
 
 int main(int argc, char ** argv) {
     struct HammingVectorParameters args = {0};
@@ -88,6 +86,19 @@ int m_EncodeRequiredVector(char* strVector) {
     return 0;
 }
 
+void m_CStringToBooleanVector(std::vector<bool> * pVector) {
+
+}
+
+std::vector<bool> stringToBits(const char* str) {
+    std::vector<bool> bits;
+    for (size_t i = 0; str[i] != '\0'; ++i) {
+        for (int j = 7; j >= 0; --j) {
+            bits.push_back((str[i] >> j) & 1);
+        }
+    }
+    return bits;
+}
 /// Prints help page in terminal
 void m_PrintHelpPage() {
     std::cout
@@ -104,6 +115,7 @@ void m_PrintHelpPage() {
     std::cout << "\t--error-position\tError simulation key (optional)." << std::endl;
 }
 
+__attribute__((unused))
 void m_UseHammingAlgorithms() {
     CHamming encoder;
     std::vector<bool> data = {true, false, true, true};
